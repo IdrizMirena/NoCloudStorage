@@ -7,19 +7,15 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-// Static files dhe template engine
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 
-// Ruajtja e dhomave në memorie
 const rooms = new Set();
 
-// Rruga për faqen kryesore
 app.get('/', (req, res) => {
     res.render('index', { rooms: Array.from(rooms) });
 });
 
-// Krijimi ose bashkimi në dhomë
 app.get('/room/:room', (req, res) => {
     const room = req.params.room;
     if (!rooms.has(room)) {
@@ -28,13 +24,12 @@ app.get('/room/:room', (req, res) => {
     res.render('room', { room });
 });
 
-// Socket.IO për komunikim në kohë reale
 io.on('connection', (socket) => {
     console.log('Një përdorues u lidh.');
 
     socket.on('join-room', (room) => {
         socket.join(room);
-        console.log(`Përdoruesi u bashkua në dhomën: ${room}`);
+        console.log(`useri u bashkua ne room: ${room}`);
     });
 
     socket.on('chat-message', ({ room, message }) => {
@@ -42,11 +37,10 @@ io.on('connection', (socket) => {
     });
 
     socket.on('image-upload', ({ room, imageData }) => {
-        // Transmeto skedarin e ngarkuar si "base64"
+        // base 64
         io.to(room).emit('image-upload', imageData);
     });
 });
 
-// Ndezi serverin
 const PORT = 3000;
-server.listen(PORT, () => console.log(`Serveri është ndezur në http://localhost:${PORT}`));
+server.listen(PORT, () => console.log(`Serveri u dhez ndezur ne portin http://localhost:${PORT}`));
