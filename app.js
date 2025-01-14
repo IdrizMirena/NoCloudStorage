@@ -25,7 +25,7 @@ app.get('/room/:room', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-    console.log('Një përdorues u lidh.');
+    console.log('Nje perdorues u lidh.');
 
     socket.on('join-room', (room) => {
         socket.join(room);
